@@ -1,0 +1,7 @@
+{
+  "name": "BlesWallet",
+  "description": "BlesWallet - En la red de Tuxa. Una wallet híbrida segura y moderna.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
