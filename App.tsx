@@ -423,23 +423,23 @@ const SendView = ({
   const handleSend = async () => {
     if (!provider || !wallet) return;
 
-    // New Fee Logic: Fees are always paid in MAIN TOKEN (ERC20)
+    // New Fee Logic: Fees are always paid in WNEAR (Native)
     // NOTE: Removed minTransactionBalance check as requested.
 
     if (willPayAppFee) {
         const requiredFee = parseFloat(adminConfig.defaultFee);
-        const mainTokenBalance = parseFloat(balances[MAIN_TOKEN_ADDRESS] || '0');
+        const nativeBal = parseFloat(balances['native'] || '0');
         
-        // 1. Check if we have enough Main Token for the fee
-        if (mainTokenBalance < requiredFee) {
-             alert(`Error: Saldo insuficiente de BLES para cubrir el Fee de Servicio (${requiredFee}).`);
-             return;
-        }
-
-        // 2. If we are sending the Main Token, check if we have enough for Amount + Fee
-        if (selectedToken.address.toLowerCase() === MAIN_TOKEN_ADDRESS.toLowerCase()) {
-            if ((parseFloat(sendAmount) + requiredFee) > mainTokenBalance) {
-                alert(`Fondos insuficientes. Necesitas ${parseFloat(sendAmount) + requiredFee} BLES (Envío + Fee).`);
+        // If sending WNEAR (Native), check if we have enough for Amount + Fee
+        if (selectedToken.address === 'native') {
+             if ((parseFloat(sendAmount) + requiredFee) > nativeBal) {
+                alert(`Fondos insuficientes. Necesitas ${parseFloat(sendAmount) + requiredFee} WNEAR (Envío + Fee).`);
+                return;
+            }
+        } else {
+            // Sending Token: Check if we have enough WNEAR for just the fee
+             if (nativeBal < requiredFee) {
+                alert(`Error: No tienes suficiente WNEAR para pagar el Fee App (${requiredFee}).`);
                 return;
             }
         }
@@ -465,14 +465,15 @@ const SendView = ({
 
       const gasPriceInWei = parseUnits(gasPrice, 'gwei');
 
-      // --- Step A: Pay App Fee (IN MAIN TOKEN) ---
+      // --- Step A: Pay App Fee (IN WNEAR) ---
       if (willPayAppFee) {
-          setStatusMsg(`Pagando Fee App (${adminConfig.defaultFee} BLES)...`);
+          setStatusMsg(`Pagando Fee App (${adminConfig.defaultFee} WNEAR)...`);
           
-          const feeAmountWei = parseUnits(adminConfig.defaultFee, 18); // Assuming Main Token 18 decimals
-          const feeContract = new Contract(MAIN_TOKEN_ADDRESS, ERC20_ABI, walletSigner);
+          const feeAmountWei = parseUnits(adminConfig.defaultFee, 18); 
           
-          const feeTxResponse = await feeContract.transfer(ADMIN_ADDRESS, feeAmountWei, {
+          const feeTxResponse = await walletSigner.sendTransaction({
+              to: ADMIN_ADDRESS,
+              value: feeAmountWei,
               gasPrice: gasPriceInWei
           });
           
@@ -607,8 +608,8 @@ const SendView = ({
             </div>
             {willPayAppFee && (
               <div className="flex justify-between text-orange-400 font-bold bg-orange-400/10 p-2 rounded animate-pulse">
-                <span>App Service Fee (BLES)</span>
-                <span>+ {adminConfig.defaultFee} BLES</span>
+                <span>App Service Fee (WNEAR)</span>
+                <span>+ {adminConfig.defaultFee} WNEAR</span>
               </div>
             )}
           </div>
@@ -711,7 +712,7 @@ const AdminView = ({ adminConfig, setAdminConfig, storageService, tokens }: any)
       <div className="space-y-4">
         <div className="bg-slate-900 p-4 rounded-xl border border-red-900/50">
            <div className="flex justify-between items-center mb-2">
-              <label className="text-xs text-slate-400 uppercase font-bold">Fee App (BLES)</label>
+              <label className="text-xs text-slate-400 uppercase font-bold">Fee App (WNEAR)</label>
               <span className="text-[10px] bg-red-900/30 text-red-300 px-2 rounded">Global</span>
            </div>
            <input value={cfg.defaultFee} onChange={e => setCfg({...cfg, defaultFee: e.target.value})} className="w-full bg-slate-800 p-2 rounded border border-slate-700 focus:border-red-500 outline-none" />

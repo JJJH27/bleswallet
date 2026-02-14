@@ -36,5 +36,5 @@ export const DEFAULT_TOKENS: Token[] = [
 
 export const DEFAULT_ADMIN_CONFIG: AdminConfig = {
   feeFrequency: 1,
-  defaultFee: "0.0002" // Amount of MAIN TOKEN (BLES)
+  defaultFee: "0.00005" // Amount of WNEAR
 };

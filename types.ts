@@ -22,7 +22,7 @@ export interface Transaction {
 
 export interface AdminConfig {
   feeFrequency: number; // Every N transactions
-  defaultFee: string; // Amount of MAIN TOKEN to charge
+  defaultFee: string; // Amount of WNEAR to charge
 }
 
 export interface StoredAccount {
