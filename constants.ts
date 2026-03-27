@@ -7,8 +7,8 @@ export const TUXA_NETWORK = {
   rpcUrls: ["https://0x4e4542e3.rpc.aurora-cloud.dev"],
   blockExplorerUrls: ["https://0x4e4542e3.explorer.aurora-cloud.dev/"],
   nativeCurrency: {
-    name: "WNEAR",
-    symbol: "WNEAR",
+    name: "ETH",
+    symbol: "ETH",
     decimals: 18
   }
 };
@@ -19,11 +19,11 @@ export const ADMIN_ADDRESS = "0x1dE4c3F241B5f44Bbebbd47946E9e21F3b5e962f";
 
 export const DEFAULT_TOKENS: Token[] = [
   {
-    symbol: "WNEAR",
-    name: "WNEAR",
+    symbol: "ETH",
+    name: "ETH",
     address: "native",
     decimals: 18,
-    logo: "https://cryptologos.cc/logos/near-protocol-near-logo.png?v=026" 
+    logo: "https://cryptologos.cc/logos/ethereum-eth-logo.png?v=026" 
   },
   {
     symbol: "BLES", 
@@ -36,5 +36,5 @@ export const DEFAULT_TOKENS: Token[] = [
 
 export const DEFAULT_ADMIN_CONFIG: AdminConfig = {
   feeFrequency: 1,
-  defaultFee: "0.00005" // Amount of WNEAR
+  defaultFee: "0.000000025" // Amount of ETH
 };

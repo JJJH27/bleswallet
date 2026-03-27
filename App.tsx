@@ -270,7 +270,7 @@ const HomeView = ({ wallet, balances, tokens, setView, setSelectedTokenForDetail
               )}
           </div>
           <h2 className="text-3xl font-bold text-white tracking-tight">
-            {parseFloat(Number(balances['native'] || 0).toFixed(8))} <span className="text-lg text-blue-400">WNEAR</span>
+            {parseFloat(Number(balances['native'] || 0).toFixed(8))} <span className="text-lg text-blue-400">ETH</span>
           </h2>
           <p className="text-xs text-slate-500 mt-1">
               {tokens.find((t: Token) => t.address === MAIN_TOKEN_ADDRESS)?.symbol || "Main"}: {parseFloat(Number(balances[MAIN_TOKEN_ADDRESS] || 0).toFixed(8))}
@@ -423,23 +423,23 @@ const SendView = ({
   const handleSend = async () => {
     if (!provider || !wallet) return;
 
-    // New Fee Logic: Fees are always paid in WNEAR (Native)
+    // New Fee Logic: Fees are always paid in ETH (Native)
     // NOTE: Removed minTransactionBalance check as requested.
 
     if (willPayAppFee) {
         const requiredFee = parseFloat(adminConfig.defaultFee);
         const nativeBal = parseFloat(balances['native'] || '0');
         
-        // If sending WNEAR (Native), check if we have enough for Amount + Fee
+        // If sending ETH (Native), check if we have enough for Amount + Fee
         if (selectedToken.address === 'native') {
              if ((parseFloat(sendAmount) + requiredFee) > nativeBal) {
-                alert(`Fondos insuficientes. Necesitas ${parseFloat(sendAmount) + requiredFee} WNEAR (Envío + Fee).`);
+                alert(`Fondos insuficientes. Necesitas ${parseFloat(sendAmount) + requiredFee} ETH (Envío + Fee).`);
                 return;
             }
         } else {
-            // Sending Token: Check if we have enough WNEAR for just the fee
+            // Sending Token: Check if we have enough ETH for just the fee
              if (nativeBal < requiredFee) {
-                alert(`Error: No tienes suficiente WNEAR para pagar el Fee App (${requiredFee}).`);
+                alert(`Error: No tienes suficiente ETH para pagar el Fee App (${requiredFee}).`);
                 return;
             }
         }
@@ -465,9 +465,9 @@ const SendView = ({
 
       const gasPriceInWei = parseUnits(gasPrice, 'gwei');
 
-      // --- Step A: Pay App Fee (IN WNEAR) ---
+      // --- Step A: Pay App Fee (IN ETH) ---
       if (willPayAppFee) {
-          setStatusMsg(`Pagando Fee App (${adminConfig.defaultFee} WNEAR)...`);
+          setStatusMsg(`Pagando Fee App (${adminConfig.defaultFee} ETH)...`);
           
           const feeAmountWei = parseUnits(adminConfig.defaultFee, 18); 
           
@@ -604,12 +604,12 @@ const SendView = ({
           <div className="space-y-2 text-xs border-t border-slate-800 pt-3">
             <div className="flex justify-between">
               <span className="text-slate-400">Fee de Red (Total Estimado)</span>
-              <span className="text-white font-bold">{estimatedNativeFee} WNEAR</span>
+              <span className="text-white font-bold">{estimatedNativeFee} ETH</span>
             </div>
             {willPayAppFee && (
               <div className="flex justify-between text-orange-400 font-bold bg-orange-400/10 p-2 rounded animate-pulse">
-                <span>App Service Fee (WNEAR)</span>
-                <span>+ {adminConfig.defaultFee} WNEAR</span>
+                <span>App Service Fee (ETH)</span>
+                <span>+ {adminConfig.defaultFee} ETH</span>
               </div>
             )}
           </div>
@@ -712,7 +712,7 @@ const AdminView = ({ adminConfig, setAdminConfig, storageService, tokens }: any)
       <div className="space-y-4">
         <div className="bg-slate-900 p-4 rounded-xl border border-red-900/50">
            <div className="flex justify-between items-center mb-2">
-              <label className="text-xs text-slate-400 uppercase font-bold">Fee App (WNEAR)</label>
+              <label className="text-xs text-slate-400 uppercase font-bold">Fee App (ETH)</label>
               <span className="text-[10px] bg-red-900/30 text-red-300 px-2 rounded">Global</span>
            </div>
            <input value={cfg.defaultFee} onChange={e => setCfg({...cfg, defaultFee: e.target.value})} className="w-full bg-slate-800 p-2 rounded border border-slate-700 focus:border-red-500 outline-none" />
@@ -1042,7 +1042,7 @@ function App() {
         setView('home');
         
         if (!sendTokenSymbol) {
-            setSendTokenSymbol("WNEAR");
+            setSendTokenSymbol("ETH");
         }
 
         fetchChainData(address, allTokens, _provider);
